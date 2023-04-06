@@ -13,18 +13,18 @@ app.get('/v1/zillow/zestimate', async (req, res) => {
     
     //Check to see if we have enough of the parameters that we want
     if (!sqft || !bed || !bath) {
-        res.status(404).json( {message: 'All parameters, sqft, bed, and bath are required'})
+        return res.status(404).json( {message: 'All parameters, sqft, bed, and bath are required'})
     }
 
     //Checking to see if the values of the query can be parsed into a number. If not, its a bad request
     for (param in req.query) { 
          if (isNaN(req.query[param])) {
-             res.status(404).json({message: `The query parameter ${param} is not a number`});
+             return res.status(404).json({message: `The query parameter ${param} is not a number`});
          }
     }
 
     const zestimate = req.query.sqft * req.query.bed * req.query.bath * 10;
-    res.status(200).json({zestimate: zestimate});
+    return res.status(200).json({zestimate: zestimate});
   })
 
 app.get('/v1/zillow/houses', async (req, res) => {
@@ -39,18 +39,18 @@ app.get('/v1/zillow/houses', async (req, res) => {
         
     });
 
-    res.status(200).send(houses)
+    return res.status(200).send(houses)
 })
 
 app.get('/v1/zillow/prices', async (req, res) => {
     const { usd } = req.query;
 
     if (!usd) {
-        res.status(404).json( {message: 'The parameter usd is required'});
+        return res.status(404).json( {message: 'The parameter usd is required'});
     }
 
     if (isNaN(req.query.usd)){
-        res.status(404).json({message: "The query parameter usd is not a number"});
+        return res.status(404).json({message: "The query parameter usd is not a number"});
     }
 
     houses = []
@@ -61,14 +61,14 @@ app.get('/v1/zillow/prices', async (req, res) => {
         }
     }
 
-    res.status(200).json(houses);
+    return res.status(200).json(houses);
 })
 
 
 
 
 app.use('*', (req, res) => {
-    res.status(404).json({message: "This endpoint does not exist!"})
+    return res.status(404).json({message: "This endpoint does not exist!"})
 })
 
 
